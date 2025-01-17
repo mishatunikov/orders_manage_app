@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'orders.apps.OrdersConfig',
 ]
 
 MIDDLEWARE = [
@@ -50,10 +51,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'orders_manage_app.urls'
 
+TEMPLATES_DIR = BASE_DIR / 'templates'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
+        'DIRS': [TEMPLATES_DIR]
         ,
         'APP_DIRS': True,
         'OPTIONS': {
