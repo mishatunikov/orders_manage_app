@@ -21,11 +21,16 @@ class OrderCreateView(CreateView):
 
     def post(self, request, *args, **kwargs):
         post_data = request.POST.copy()
-        items = request.POST.getlist('items[]')
-        prices = request.POST.getlist('prices[]')
-        post_data[items] = [
+        item_price = sorted(
+            zip(
+                request.POST.getlist('items[]'),
+                request.POST.getlist('prices[]'),
+            ),
+            key=lambda data: data[0],
+        )
+        post_data['items'] = [
             {'name': str(item), 'price': int(price)}
-            for item, price in zip(items, prices)
+            for item, price in item_price
         ]
         request.POST = post_data
         return super().post(request, *args, **kwargs)
