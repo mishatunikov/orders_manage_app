@@ -1,12 +1,32 @@
-from django.views.generic import CreateView
+from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 from django.urls import reverse_lazy
 
 from orders.forms import OrderCreationForm
 from orders.models import Order
 
 
+class OrderListView(ListView):
+    """Главная страница."""
+
+    template_name = 'orders/homepage.html'
+    model = Order
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['page_obj'] = context['object_list']
+        return context
+
+
+class OrderDeleteView(DeleteView):
+    pass
+
+
+class OrderUpdateView(UpdateView):
+    pass
+
+
 class OrderCreateView(CreateView):
-    """Обработчик нового заказа."""
+    """Создания нового заказа."""
 
     model = Order
     form_class = OrderCreationForm
