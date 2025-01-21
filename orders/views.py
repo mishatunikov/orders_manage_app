@@ -1,4 +1,10 @@
-from django.views.generic import CreateView, ListView, DeleteView, UpdateView
+from django.views.generic import (
+    CreateView,
+    ListView,
+    DeleteView,
+    UpdateView,
+    DetailView,
+)
 from django.urls import reverse_lazy
 
 from orders.forms import OrderCreationForm
@@ -18,7 +24,8 @@ class OrderListView(ListView):
 
 
 class OrderDeleteView(DeleteView):
-    pass
+    model = Order
+    success_url = reverse_lazy('orders/create.html')
 
 
 class OrderUpdateView(UpdateView):
@@ -59,3 +66,8 @@ class OrderCreateView(CreateView):
             self.request.POST.getlist('prices[]'),
         )
         return self.render_to_response(context)
+
+
+class OrderDetailView(DetailView):
+    template_name = 'orders/detail.html'
+    model = Order
