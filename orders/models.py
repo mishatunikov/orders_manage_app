@@ -16,6 +16,11 @@ class Order(models.Model):
     total_price = models.IntegerField(verbose_name='Стоимость заказа')
     created_at = models.DateTimeField('Дата создания', auto_now_add=True)
 
+    def save(self, *args, **kwargs):
+        self.total_price = sum(item['price'] for item in self.items)
+        # Вызов родительского метода для сохранения объекта в базе данных
+        super().save(*args, **kwargs)
+
     @property
     def item_name_price(self) -> list:
         return [(item["name"], item["price"]) for item in self.items]
@@ -25,8 +30,3 @@ class Order(models.Model):
 
     def __str__(self):
         return f'Заказ №{self.pk}'
-
-
-
-
-
