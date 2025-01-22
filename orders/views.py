@@ -55,12 +55,6 @@ class OrderEditCreateMixin(OrderActionMixin):
             )
         return self.render_to_response(context)
 
-    def form_valid(self, form):
-        form.instance.total_price = sum(
-            item['price'] for item in form.instance.items
-        )
-        return super().form_valid(form)
-
 
 class StatisticView(TemplateView):
     """Страница со статистикой работы."""
@@ -102,7 +96,6 @@ class OrderUpdateView(OrderEditCreateMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        print([(item['name'], item['price']) for item in self.object.items])
         context['items'] = [
             (item['name'], item['price']) for item in self.object.items
         ]
@@ -122,7 +115,7 @@ class OrderListView(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        flipped_statuses = {val.lower(): key for key, val in STATUSES.items()}
+        flipped_statuses = {val.lower(): key for key, val in STATUSES}
         if search := self.request.GET.get('search'):
             if is_text(search):
                 queryset = queryset.filter(
