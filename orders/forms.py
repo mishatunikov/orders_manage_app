@@ -1,35 +1,32 @@
-import re
-
 from django.forms import ModelForm, ValidationError
 
 from orders.models import Order
+from orders.filters import is_text, is_number
 
 
-class OrderCreationForm(ModelForm):
+class OrderForm(ModelForm):
     class Meta:
         model = Order
-        exclude = ('total_price', 'created_at', 'status')
+        exclude = ('total_price', 'created_at')
 
     def clean_items(self):
         items = self.cleaned_data['items']
+
         for item in items:
-            if not item['name'].isalpha():
+            if not is_text(item['name']):
                 raise ValidationError(
                     'Название блюда должно состоять только из букв.'
                 )
 
-            if not re.fullmatch(r'[1-9][0-9]*', item['price']):
+            if not is_number(item['price']):
                 raise ValidationError(
                     'Цена может быть представлена только целым положительным '
                     'числом.'
                 )
 
             item['price'] = int(item['price'])
+            item['name'] = item['name'].lower()
 
         return items
 
 
-class OrderEditForm(ModelForm):
-    class Meta:
-        model = Order
-        exclude = ('total_price', 'created_at')
