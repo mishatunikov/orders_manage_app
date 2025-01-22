@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}
+    Статистика работы
+{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Статистика работы</h5>
+            <hr>
+            <p>Количество заказов в ожидании: {{ waiting_orders.count }}</p>
+            <p>Количество готовых заказов: {{ ready_orders.count }}</p>
+            <p>Количество оплаченных заказов: {{ paid_orders.count }}</p>
+            <hr>
+            <p style="font-size: 18px;">Прибыль с оплаченных заказов на данный момент: {{ profit }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

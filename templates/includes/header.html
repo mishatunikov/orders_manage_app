@@ -1,0 +1,29 @@
+{% load static %}
+<header>
+  <nav class="navbar navbar-light" style="background-color: #99c5dd">
+    <div class="container">
+      <a class="navbar-brand" href="{% url 'orders:homepage' %}">
+        <img src="{% static 'img/logo.png' %}" width="30" height="30" class="d-inline-block align-top" alt="">
+        Активные заказы
+      </a>
+        <ul class="nav  nav-pills">
+      {% with request.resolver_match.view_name as view_name %}
+          <li class="nav-item">
+            <a class="nav-link {% if view_name == 'orders:create' %} text-white {% endif %}" href="{% url 'orders:create' %}">
+              Создать заказ
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if view_name == 'orders:stat' %} text-white {% endif %}" href="{% url 'orders:stat' %}">
+              Статистика
+            </a>
+          </li>
+          <form method="get" class="form-inline d-flex" action="{% url 'orders:homepage' %}">
+              <input name="search" style="width: 250px;" type="search" class="form-control mr-sm-2" placeholder="Статус или номер стола" aria-label="search" required>
+              <button class="btn btn-sm text-muted" type="submit">Поиск заказа</button>
+          </form>
+        </ul>
+      {% endwith %}
+    </div>
+  </nav>
+</header>

@@ -1,0 +1,37 @@
+<div class="col d-flex justify-content-center">
+  <div class="card" style="width: 40rem;">
+    <div class="card-body">
+      <h4 class="card-title"><b><a href="{% url 'orders:detail' order.id %}">{{ order }}</a></b></h4>
+      <h5 class="card-subtitle mb-2">
+        <small>
+          <span class="text-muted">Номер стола:</span> {{ order.table_number }}<br>
+          <span class="text-muted">Время создания:</span> {{ order.created_at|date:"d E Y, H:i" }}<br>
+          <span class="text-muted">Статус заказа:</span> {{ order.get_status_display }}<br>
+          {% if 'order' in request.path %}
+          <span class="text-muted">Состав заказа:</span>
+          <ul class="list-group">
+            {% for name, price in order.item_name_price %}
+              <li class="list-group-item">{{ name }}: {{ price }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+              <span class="text-muted">Состав заказа:</span>
+              {% for name, _ in order.item_name_price %}
+                {% if forloop.last %}{{ name }}{% else %}{{ name }},{% endif %}
+              {% endfor %}
+            <br>
+          {% endif %}
+          <span class="text-muted">Суммарная стоимость заказа:</span> {{ order.total_price }}<br>
+          </small>
+      </h5>
+      <div class="mb-2">
+        <a class="btn btn-sm text-muted" href="{% url 'orders:edit' order.id %}" role="button">
+          Отредактировать заказ
+        </a>
+        <a class="btn btn-sm text-muted" href="{% url 'orders:delete' order.id %}" role="button">
+          Удалить заказ
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,11 @@
+<div class="dish-row row mb-2">
+  <div class="col">
+    <input type="text" name="items[]" value="{{ item }}" class="form-control" placeholder="Блюдо" required>
+  </div>
+  <div class="col">
+    <input type="number" name="prices[]" value="{{ price }}" class="form-control" placeholder="Цена" required min="1">
+  </div>
+  <div class="col-auto">
+    <button type="button" class="btn btn-danger" onclick="removeDishRow(this)">Удалить</button>
+  </div>
+</div>

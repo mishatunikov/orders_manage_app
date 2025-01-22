@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% block title %}
+  {% if '/edit/' in request.path %}
+    Редактирование заказа
+  {% elif "/delete/" in request.path %}
+    Удаление заказа
+  {% else %}
+    Создание заказа
+  {% endif %}
+{% endblock %}
+{% block content %}
+  <div class="col d-flex justify-content-center">
+    <div class="card" style="width: 40rem;">
+      <div class="card-header">
+        {% if '/edit/' in request.path %}
+          Редактирование заказа
+        {% elif '/delete/' in request.path %}
+          Удаление заказа
+        {% else %}
+          Создание заказа
+        {% endif %}
+      </div>
+      <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+            {% if error_message %}
+              <div class="alert alert-danger" role="alert">
+                  <strong>Error:</strong>
+                    {% for error in error_message %}
+                        {{ error | safe }}
+                    {% endfor %}
+              </div>
+            {% endif %}
+          {% if not '/delete/' in request.path %}
+          <div class="mb-3">
+            <label for="table_number" class="form-label">Номер стола</label>
+            <input type="number" name="table_number" value="{{ form.instance.table_number }}" class="form-control" id="table_number" placeholder="Номер стола" required min="1">
+          </div>
+          <div class="form-group" id="dish-list">
+            <label for="items">Список блюд:</label>
+            {% for item, price in items %}
+              {% include "includes/dish_row.html" %}
+            {% endfor %}
+            {% if not items %}
+              {% include "includes/dish_row.html" %}
+            {% endif %}
+          </div>
+          {% if '/edit/' in request.path %}
+            <div class="mb-2">
+              <label for="id_status">Статус:</label>
+              <select name="status" id="id_status" class="form-control">
+                  {% for value, label in form.fields.status.choices %}
+                      <option value="{{ value }}" {% if value == form.instance.status %} selected {% endif %}>{{ label }}</option>
+                  {% endfor %}
+              </select>
+            </div>
+          {% endif %}
+            <button type="button" class="btn btn-primary" onclick="addDishRow()">Добавить блюдо</button>
+          {% else %}
+              <article>
+              <p>{{ order }} | {{ order.created_at|date:"d E Y" }} | {{ order.get_status_display }}</p>
+              <p>
+                Состав заказа:
+                {% for name, _ in order.item_name_price %}
+                  {% if forloop.last %}{{ name }}{% else %}{{ name }},{% endif %}
+                {% endfor %}
+              </p>
+            </article>
+          {% endif %}
+          <button type="submit" class="btn btn-primary">
+            {% if '/delete/' in request.path %}
+             Удалить
+            {% elif '/edit/' in request.path %}
+              Подтвердить редактирование
+            {% else %}
+              Создать заказ
+            {% endif %}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+    <script>
+    function addDishRow() {
+        const dishList = document.getElementById('dish-list');
+        const newRow = document.createElement('div');
+        newRow.innerHTML = `
+              {% include "includes/dish_row.html" %}
+        `;
+        dishList.appendChild(newRow);
+    }
+
+    function removeDishRow(button) {
+        button.parentElement.parentElement.remove();
+    }
+  </script>
+{% endblock %}

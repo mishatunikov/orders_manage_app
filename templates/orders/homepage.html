@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}
+  Активные заказы
+{% endblock %}
+{% block content %}
+  {% for order in page_obj %}
+    <article class="mb-5">
+      {% include "includes/dish_card.html" %}
+    </article>
+  {% endfor %}
+{% endblock %}
