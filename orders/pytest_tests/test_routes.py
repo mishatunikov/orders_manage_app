@@ -13,7 +13,7 @@ from pytest_lazyfixture import lazy_fixture
         lazy_fixture('delete_order_url'),
         lazy_fixture('edit_order_url'),
         lazy_fixture('create_order_url'),
-    )
+    ),
 )
 @pytest.mark.django_db
 def test_pages_availability(client, url):
