@@ -17,6 +17,7 @@ from orders.contants import STATUSES
 
 class OrderActionMixin:
     """Миксин для страниц действий с заказом."""
+
     model = Order
     template_name = 'orders/create.html'
     success_url = reverse_lazy('orders:homepage')
@@ -24,6 +25,7 @@ class OrderActionMixin:
 
 class OrderEditCreateMixin(OrderActionMixin):
     """Миксин для страниц редактирования и создания заказа."""
+
     form_class = OrderForm
 
     def post(self, request, *args, **kwargs):
@@ -35,6 +37,7 @@ class OrderEditCreateMixin(OrderActionMixin):
                 request.POST.getlist('prices[]'),
             )
         ]
+        # Установка статуса по-умолчанию.
         if 'status' not in post_data:
             post_data['status'] = 'waiting'
         request.POST = post_data
@@ -42,22 +45,19 @@ class OrderEditCreateMixin(OrderActionMixin):
 
     def form_invalid(self, form):
         context = self.get_context_data(form=form)
+        # Передача ошибок формы.
         context['error_message'] = form.errors.values()
-        if self.object:
-            context['items'] = zip(
-                self.request.POST.getlist('items[]'),
-                self.request.POST.getlist('prices[]'),
-            )
-        else:
-            context['items'] = zip(
-                self.request.POST.getlist('items[]'),
-                self.request.POST.getlist('prices[]'),
-            )
+
+        context['items'] = zip(
+            self.request.POST.getlist('items[]'),
+            self.request.POST.getlist('prices[]'),
+        )
         return self.render_to_response(context)
 
 
 class StatisticView(TemplateView):
     """Страница со статистикой работы."""
+
     template_name = 'orders/statistics.html'
 
     def get_context_data(self, **kwargs):
@@ -96,6 +96,7 @@ class OrderUpdateView(OrderEditCreateMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
+
         context['items'] = [
             (item['name'], item['price']) for item in self.object.items
         ]
@@ -116,6 +117,8 @@ class OrderListView(ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         flipped_statuses = {val.lower(): key for key, val in STATUSES}
+
+        # Обработка поискового запроса в случае если он был.
         if search := self.request.GET.get('search'):
             if is_text(search):
                 queryset = queryset.filter(

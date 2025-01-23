@@ -5,11 +5,13 @@ from orders.filters import is_text, is_number
 
 
 class OrderForm(ModelForm):
+    """Базовая форма для создания объекта Order."""
+
     class Meta:
         model = Order
         exclude = ('total_price', 'created_at')
 
-    def clean_items(self):
+    def clean_items(self) -> list:
         items = self.cleaned_data['items']
 
         for item in items:
@@ -28,5 +30,3 @@ class OrderForm(ModelForm):
             item['name'] = item['name'].lower()
 
         return items
-
-
